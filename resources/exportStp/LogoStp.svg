@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="74.328865mm"
+   height="73.283043mm"
+   viewBox="0 0 74.328865 73.283043"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="LogoStl.svg"
+   inkscape:export-filename="C:\Users\wilko.vehreke\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\FilteredExport\resources\exportStl\16x16-diark.png"
+   inkscape:export-xdpi="5.4699998"
+   inkscape:export-ydpi="5.4699998">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="357.1594"
+     inkscape:cy="151.81789"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="2560"
+     inkscape:window-height="1388"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-1.211802,-0.85107259)">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot815"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:1.25;font-family:'Myriad Pro';-inkscape-font-specification:'Myriad Pro';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;"
+       transform="matrix(0,0.26458333,-0.26458333,0,112.6959,-24.525811)"
+       inkscape:export-xdpi="21.870001"
+       inkscape:export-ydpi="21.870001"
+       inkscape:export-filename="C:\Users\wilko.vehreke\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\FilteredExport\resources\16x16.png"><flowRegion
+         id="flowRegion817"
+         style="fill:#000000;"><rect
+           id="rect819"
+           width="344.28568"
+           height="341.42856"
+           x="93.571426"
+           y="103.94826"
+           style="fill:#000000;" /></flowRegion><flowPara
+         id="flowPara821"
+         style="font-size:192px;fill:#000000;">STP</flowPara></flowRoot>    <path
+       style="fill:none;stroke:#000000;stroke-width:0.29809487px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 39.030363,0.85107259 V 73.98507 H 29.673952 V 47.940197 L 1.4757103,1.1716266 H 39.683137"
+       id="path829"
+       inkscape:connector-curvature="0"
+       inkscape:export-xdpi="21.870001"
+       inkscape:export-ydpi="21.870001"
+       inkscape:export-filename="C:\Users\wilko.vehreke\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\FilteredExport\resources\16x16.png" />
+    <path
+       style="fill:#ffb380;stroke:#000000;stroke-width:0.71428573;stroke-opacity:1"
+       d="M 113.38229,230.18395 V 181.42241 L 60.525149,93.74739 C 31.45372,45.526133 7.6680058,5.9152511 7.6680058,5.7232111 c 0,-0.19204 31.3392862,-0.3491636 69.6428572,-0.3491636 H 146.95372 V 142.15976 278.94548 h -16.78571 -16.78572 z"
+       id="path831"
+       inkscape:connector-curvature="0"
+       transform="scale(0.26458333)"
+       inkscape:export-xdpi="21.870001"
+       inkscape:export-ydpi="21.870001"
+       inkscape:export-filename="C:\Users\wilko.vehreke\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\FilteredExport\resources\16x16.png" />
+    <path
+       style="fill:#ff7f2a;stroke:#000000;stroke-width:0.71428573;stroke-opacity:1"
+       d="m 109.51654,226.47548 v -48.53906 l -5.10501,-8.42523 C 82.964981,134.11611 4.9798867,4.4758074 4.7066674,3.7645331 4.4337566,3.0540619 18.386541,2.871676 73.011546,2.871676 H 141.6594 V 138.9431 275.01453 h -16.07143 -16.07143 z"
+       id="path826"
+       inkscape:connector-curvature="0"
+       transform="matrix(0.26458333,0,0,0.26458333,1.211802,0.85107259)"
+       inkscape:export-filename="C:\Users\wilko.vehreke\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\FilteredExport\resources\16x16.png"
+       inkscape:export-xdpi="21.870001"
+       inkscape:export-ydpi="21.870001" />
+    <path
+       style="fill:#5555ff;stroke:#000000;stroke-width:0.71428573;stroke-opacity:1"
+       d="m 110.23082,226.08195 v -48.2183 L 77.433903,123.40338 C 3.8825564,1.2691593 5.8966156,4.7078692 7.6120793,4.192876 8.4631034,3.9373931 38.811181,3.6963217 75.052253,3.6571617 l 65.892857,-0.0712 V 138.9431 274.30025 h -15.35714 -15.35715 z"
+       id="path827"
+       inkscape:connector-curvature="0"
+       transform="matrix(0.26458333,0,0,0.26458333,1.211802,0.85107259)"
+       inkscape:export-filename="C:\Users\wilko.vehreke\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\FilteredExport\resources\16x16.png"
+       inkscape:export-xdpi="21.870001"
+       inkscape:export-ydpi="21.870001" />
+    <path
+       style="fill:#3771c8;stroke:#000000;stroke-width:0.71428573;stroke-opacity:1"
+       d="M 110.94511,225.65347 V 177.72098 L 71.749844,112.61775 C 31.040668,44.999931 11.109828,11.643395 9.1356489,7.8257547 8.5014883,6.5994233 8.1936978,5.3848602 8.45167,5.1267257 8.7096423,4.8685912 38.465486,4.5658662 74.575767,4.4540034 L 140.23082,4.2506165 V 138.91829 273.58596 h -14.64285 -14.64286 z"
+       id="path830"
+       inkscape:connector-curvature="0"
+       transform="matrix(0.26458333,0,0,0.26458333,1.211802,0.85107259)"
+       inkscape:export-filename="C:\Users\wilko.vehreke\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\FilteredExport\resources\16x16.png"
+       inkscape:export-xdpi="21.870001"
+       inkscape:export-ydpi="21.870001" />
+    <path
+       style="fill:#55d400;stroke:#000000;stroke-width:0.71428573;stroke-opacity:1"
+       d="M 111.6594,225.29782 V 177.72397 L 62.493718,95.833533 C 35.452595,50.793799 12.315294,12.145832 11.077493,9.9491658 L 8.8269468,5.9552271 23.929769,5.4848801 c 8.306552,-0.2586908 37.71171,-0.470347 65.344798,-0.470347 H 139.51654 V 138.9431 272.87168 H 125.58797 111.6594 Z"
+       id="path832"
+       inkscape:connector-curvature="0"
+       transform="matrix(0.26458333,0,0,0.26458333,1.211802,0.85107259)"
+       inkscape:export-filename="C:\Users\wilko.vehreke\AppData\Roaming\Autodesk\Autodesk Fusion 360\API\AddIns\FilteredExport\resources\16x16.png"
+       inkscape:export-xdpi="21.870001"
+       inkscape:export-ydpi="21.870001" />
+  </g>
+</svg>
