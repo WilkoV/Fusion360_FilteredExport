@@ -55,6 +55,10 @@ def getCleanName(name, removeVersionTagFromNames, removeSpaces):
 
         # replace spaces with underscores (_)
         result = result.replace(' ', '_')
+    
+    # if the name contains dots it will fail silently during the export. 
+    # Replace it with a double underscore. 
+    result = result.replace('.', '__')
 
     return result
 

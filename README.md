@@ -69,8 +69,9 @@ UI configuration and filters are the same as the saveCopy function. The only dif
 # Change log
 Date | Module | Description
 ------------ | ------------- | -------------
-2018/10/28 | STL Export | Fix #2 | Feature Request implemented: Filter / exclude linked components. 
-2018/10/28 | ALL | Fix #1 | Add-in throws an error if only the root component is selected. Fixed. 
+2019/02/13 | STL Export | Fix #2 - Files will not be exported if they contain a dot (.) in the filename. The API doesn't reports an error. Issue is fixed by replacing dots with two underscores (__)
+2018/10/28 | STL Export | Filter / exclude linked components. 
+2018/10/28 | ALL |  Add-in throws an error if only the root component is selected. Fixed. 
 2018/10/01 | Export STEP/STP | Like Save Copy As but for STEP/STP exports
 2018/06/01 | Save Copy As Export | Mixed leaves export added
 2018/06/01 | Save Copy As Export | Leaves export added
