@@ -26,8 +26,8 @@ Select Component | If no components are selected, the add-in processes all compo
 Parameter | Description
 ------------ | -------------
 Format | Defines if the resulting export contains `binary` or `text` content
-Filter linked components | Check to ignore linked components otherwise uncheck
 Refinement | The options `high`, `medium` or `low` correspond to the original definition
+Filter linked components | Check to ignore linked components otherwise uncheck
 
 ### Filename configuration
 This part is hidden by default and configures the filenames of the export. The default filename looks like `<Root_component_name>-<Component_name>-<Body_name>.stl`. 
@@ -36,6 +36,7 @@ Parameter | Description
 ------------ | -------------
 Add root name | If checked the first element of the filename is `<Root component name v[0-9]*>`
 Add component name | If checked the `<component name v[0-9]*>` is part of the filename
+Component name type | The option 'Last From Path' adds the name of the last component to the path, 'Full Path' adds all component names from the body path to the filename.
 Remove version tags | If checked version tags matching the pattern ` v[0-9]*` are removed
 Remove spaces | Leading and trailing spaces are removed, remaining spaces are replaced with underscores
 
@@ -69,6 +70,7 @@ UI configuration and filters are the same as the saveCopy function. The only dif
 # Change log
 Date | Module | Description
 ------------ | ------------- | -------------
+2019/02/13 | STL Export | Closes #1 - Adds the choice between 'only last component name' or 'full path' for exported component names. 
 2019/02/13 | STL Export | Fix #2 - Files will not be exported if they contain a dot (.) in the filename. The API doesn't reports an error. Issue is fixed by replacing dots with two underscores (__)
 2018/10/28 | STL Export | Filter / exclude linked components. 
 2018/10/28 | ALL |  Add-in throws an error if only the root component is selected. Fixed. 

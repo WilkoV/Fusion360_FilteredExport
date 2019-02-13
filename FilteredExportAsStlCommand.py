@@ -4,7 +4,6 @@ import traceback
 import os.path
 import re
 
-from .FilteredExportUtil import getComponents
 from .FilteredExportUtil import renderResultMessage
 from .FilteredExportUtil import FilteredExportResult
 
@@ -26,6 +25,9 @@ S_STL_EXPORT_REMOVE_SPACES_FROM_FILENAME_LOOKUP = 'stlExportFileRemoveSpacesFrom
 S_STL_GROUP_FILENAME_OPTIONS_LOOKUP = 'stlFilenameGroupFilenameOptions'
 S_STL_SELECTION_LOOKUP='stlSelection'
 S_STL_FILTER_LINKED_COMPONENTS = 'stlExportFilterLinkedComponents'
+S_STL_EXPORT_COMPONENT_NAME_TYPE = 'stlDropDownExportComponentNameType'
+S_STL_EXPORT_COMPONENT_NAME_TYPE_LAST_FROM_PATH = 'Last From Path'
+S_STL_EXPORT_COMPONENT_NAME_TYPE_FULL_PATH = 'Full Path'
 
 # build a file name from a component. File name looks like:
 # body parent component name + - + body name. leading and
@@ -34,7 +36,6 @@ S_STL_FILTER_LINKED_COMPONENTS = 'stlExportFilterLinkedComponents'
 # If the file name already exists in a list, and index suffix will
 # be added (index)
 #
-
 
 #
 # cleans up a name by removing leading and tailing spaces, version tags and
@@ -45,6 +46,7 @@ def getCleanName(name, removeVersionTagFromNames, removeSpaces):
 
     # remove version tag
     if removeVersionTagFromNames:
+        #remove versions from root
         result = re.sub(r' v[0-9]*$', '', result)
         
     result.replace(':', '__')
@@ -62,27 +64,44 @@ def getCleanName(name, removeVersionTagFromNames, removeSpaces):
 
     return result
 
-def getFileName(body, rootComponent, addRootComponentNameToFilename, \
-                    addComponentNameToFilename, removeVersionTagFromNames, \
-                    removeSpaces, fileNames):
 
-    # get clean names
-    rootName = getCleanName(rootComponent.name, removeVersionTagFromNames, removeSpaces)
-    componentName = getCleanName(body.parentComponent.name, removeVersionTagFromNames, removeSpaces)
-    bodyName = getCleanName(body.name, removeVersionTagFromNames, removeSpaces)
+#
+# cleans up a component path by removing leading and tailing spaces, version tags and
+# replaces blanks with underscores (_)
+#
+def getCleanNameFromComponentPath(name, removeVersionTagFromNames, removeSpaces):
+    result = name
+
+    # remove versions from components from path
+    if removeVersionTagFromNames:
+        result = re.sub(r':[0-9]*\+', '-', result)
+        result = re.sub(r':[0-9]*$', '', result)
+    
+    return getCleanName(result, removeVersionTagFromNames, removeSpaces)
+    
+
+#
+# Get file name from body's name and component's name and remove unwanted information
+#
+def getFileName(body, rootComponent, addRootComponentNameToFilename, \
+                    addComponentNameToFilename, addLastComponentNameOnly, \
+                    removeVersionTagFromNames, removeSpaces, fileNames):
 
     # build temporary  file name
     tmpFileName = ''
 
     # add root component name if checked
-    if addRootComponentNameToFilename and (rootComponent != body.parentComponent or not addComponentNameToFilename):
-        tmpFileName += rootName + '-'
+    if addRootComponentNameToFilename and (rootComponent != body[0].parentComponent or not addComponentNameToFilename):
+        tmpFileName += getCleanName(rootComponent.name, removeVersionTagFromNames, removeSpaces) + '-'
 
     # add component name if checked and is differnt to root component
-    if addComponentNameToFilename :
-        tmpFileName += componentName + '-'
+    if addComponentNameToFilename:
+        if addLastComponentNameOnly: 
+            tmpFileName += getCleanName(body[0].parentComponent.name, removeVersionTagFromNames, removeSpaces) + '-'
+        else:
+            tmpFileName += getCleanNameFromComponentPath(body[1], removeVersionTagFromNames, removeSpaces) + '-'
 
-    tmpFileName += bodyName
+    tmpFileName += getCleanName(body[0].name, removeVersionTagFromNames, removeSpaces)
 
     # make file name unique within this export
     fileName = tmpFileName
@@ -122,7 +141,7 @@ def getPath(appObjects):
 #
 # export the list of bodies as STL files
 #
-def exportStls(bodies, rootComponent, input_values, appObjects):
+def exportStls(bodies: list, rootComponent, input_values, appObjects):
     # list of processed file names
     processedFiles = []
 
@@ -144,22 +163,24 @@ def exportStls(bodies, rootComponent, input_values, appObjects):
     if exportPath == '':
         exportPath = os.path.dirname
 
-
     # export each body as stl
     for body in bodies:
         # get clean file name
+    
         fileName = getFileName(body, rootComponent, \
                                     input_values[S_STL_EXPORT_ADD_ROOT_NAME_TO_FILENAME_LOOKUP], \
                                     input_values[S_STL_EXPORT_ADD_COMPONENT_NAME_TO_FILENAME_LOOKUP], \
+                                    input_values[S_STL_EXPORT_COMPONENT_NAME_TYPE] == S_STL_EXPORT_COMPONENT_NAME_TYPE_LAST_FROM_PATH, \
                                     input_values[S_STL_EXPORT_REMOVE_VERSION_FROM_FILENAME_LOOKUP], \
                                     input_values[S_STL_EXPORT_REMOVE_SPACES_FROM_FILENAME_LOOKUP], \
                                     processedFiles)
-
+                                    
+        
         # create full export name (including path)
         fullFileName = os.path.join(exportPath, fileName)
 
         # create export options
-        stlExportOptions = appObjects.export_manager.createSTLExportOptions(body, fullFileName)
+        stlExportOptions = appObjects.export_manager.createSTLExportOptions(body[0], fullFileName)
         stlExportOptions.setToPrintUtility = False
         stlExportOptions.isBinaryFormat = exportAsBinary
         stlExportOptions.mesRefinement = exportRefinement
@@ -176,20 +197,56 @@ def exportStls(bodies, rootComponent, input_values, appObjects):
 #
 # get a list of all bodies from all components
 #
-def getBodies(components, bodies):
+def getBodies(components: list, bodies: list):
     # iterate over components
     for component in components:
         # process all bodies from the current component
-        for body in component.bRepBodies:
-            # add to list, if the body is not hidden
-            if body.isLightBulbOn:
-                bodies.append(body)
+        if len(component) > 0:
+            for body in component[0].bRepBodies:
+                # add to list, if the body is not hidden
+                if body.isLightBulbOn:
+                    bodies.append([body, component[1]])
 
     if len(bodies) <= 0:
         raise ValueError('No bodies found.')
 
     return bodies
 
+
+#
+# get all child occurences (components) recursively from a component
+# and return a unique list of components
+#
+def getComponents(occurences, components: list, includeSubComponents, filterLinkedComponents):
+    # iterate over all occurences
+    for occurence in occurences:
+        if (filterLinkedComponents == True and occurence.isReferencedComponent == False) or filterLinkedComponents == False:        
+            # if the component is not hidden process the component
+            if occurence.isLightBulbOn:
+                # validate if the current component was already processed
+                componentFound = False
+                component = adsk.fusion.Component.cast(None)
+    
+                # itereate over unique component list and compoare current
+                # occource with element of unique component list
+                for component in components:
+                    if component[0] == occurence.component:
+                        # component exisits in filted list. No need to process
+                        # the full list
+                        componentFound = True
+                        break
+    
+                # if occurence not found in unique list of components, add this
+                # occurence because it's new
+                if not componentFound and occurence.component:
+                    components.append([occurence.component, occurence.fullPathName])
+    
+                # if this occurence has sub components process them, too
+                if occurence.childOccurrences and not componentFound and includeSubComponents:
+                    components = getComponents(occurence.childOccurrences, components, includeSubComponents, filterLinkedComponents)
+
+
+    return components
 
 #
 # Export all boides within a design as separate STL file. The logic ensures
@@ -222,8 +279,8 @@ class FilteredExportAsStlCommand(Fusion360CommandBase):
                 # process all components
                 components = getComponents(rootComponent.occurrences, components, True, input_values[S_STL_FILTER_LINKED_COMPONENTS])
                 # add root component to list, because it can contain bodies, too
-                components.append(rootComponent)
-
+                components.append([rootComponent, rootComponent.name])
+                
             # get all bodies
             bodies = []
             bodies = getBodies(components, bodies)
@@ -256,9 +313,6 @@ class FilteredExportAsStlCommand(Fusion360CommandBase):
         dropDownStlFormatItems.add(S_STL_FORMAT_BINARY, True, '')
         dropDownStlFormatItems.add(S_STL_FORMAT_TEXT, False, '')
 
-        # Filter linked components
-        filterLinkedComponents = inputs.addBoolValueInput(S_STL_FILTER_LINKED_COMPONENTS, 'Filter linked components', True, '', False).value = False
-
         # Refinement (High, Medium, Low)
         dropDownStlRefinement = inputs.addDropDownCommandInput(S_STL_REFINEMENT_LOOKUP, 'Refinement', adsk.core.DropDownStyles.LabeledIconDropDownStyle);
         dropDownStlRefinementItems = dropDownStlRefinement.listItems
@@ -266,9 +320,12 @@ class FilteredExportAsStlCommand(Fusion360CommandBase):
         dropDownStlRefinementItems.add(S_STL_REFINEMENT_MEDIUM, False, '')
         dropDownStlRefinementItems.add(S_STL_REFINEMENT_LOW, False, '')
 
+        # Filter linked components
+        inputs.addBoolValueInput(S_STL_FILTER_LINKED_COMPONENTS, 'Filter linked components', True, '', False).value = False
+
         # Define filename options
         groupFileNameOptions = inputs.addGroupCommandInput(S_STL_GROUP_FILENAME_OPTIONS_LOOKUP, 'Filename Options')
-        groupFileNameOptions.isExpanded = False
+        groupFileNameOptions.isExpanded = True
         groupFileNameOptionsChildInput = groupFileNameOptions.children
 
         # True if the name of the root component should be added to the file name otherwise false
@@ -276,6 +333,11 @@ class FilteredExportAsStlCommand(Fusion360CommandBase):
 
         # True if the component name should be added to the file name otherwise false
         groupFileNameOptionsChildInput.addBoolValueInput(S_STL_EXPORT_ADD_COMPONENT_NAME_TO_FILENAME_LOOKUP, 'Add component name', True).value = True
+        
+        dropDownComponentNameType = groupFileNameOptionsChildInput.addDropDownCommandInput(S_STL_EXPORT_COMPONENT_NAME_TYPE, 'Component name type', adsk.core.DropDownStyles.LabeledIconDropDownStyle);
+        dropDownComponentNameTypeItems = dropDownComponentNameType.listItems
+        dropDownComponentNameTypeItems.add(S_STL_EXPORT_COMPONENT_NAME_TYPE_LAST_FROM_PATH, True, '')
+        dropDownComponentNameTypeItems.add(S_STL_EXPORT_COMPONENT_NAME_TYPE_FULL_PATH, False, '')
 
         # True if the verstion tag should be removed otherwise false
         groupFileNameOptionsChildInput.addBoolValueInput(S_STL_EXPORT_REMOVE_VERSION_FROM_FILENAME_LOOKUP, 'Remove version tags', True).value = True
@@ -295,5 +357,10 @@ class FilteredExportAsStlCommand(Fusion360CommandBase):
 
     # Run when any input is changed.
     def on_input_changed(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs, changed_input, input_values):
-        pass
-
+        
+        if changed_input.id == S_STL_EXPORT_ADD_COMPONENT_NAME_TO_FILENAME_LOOKUP:
+            # show component name style if 'add components to name' is true otherwise hide the drop down list.
+            if changed_input.value == True:
+                inputs.itemById(S_STL_EXPORT_COMPONENT_NAME_TYPE).isVisible = True
+            else:
+                inputs.itemById(S_STL_EXPORT_COMPONENT_NAME_TYPE).isVisible = False
