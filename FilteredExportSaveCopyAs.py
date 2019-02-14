@@ -68,10 +68,10 @@ def exportLeaveMode(appObjects, input_values):
     # selection available?
     if S_CPY_SELECTION_LOOKUP in input_values:
         # process selcted components
-        components = getComponents(input_values[S_CPY_SELECTION_LOOKUP], components, True)
+        components = getComponents(input_values[S_CPY_SELECTION_LOOKUP], components, True, False)
     else:
         # process all components
-        components = getComponents(rootComponent.occurrences, components, True)
+        components = getComponents(rootComponent.occurrences, components, True, False)
 
      # list of processed and skipped file names
     processedComponents = []
@@ -92,7 +92,6 @@ def exportLeaveMode(appObjects, input_values):
     # return resulting lists
     return FilteredExportResult(documentFolder.name, processedComponents, skippedComponents)
 
-
 #
 # Export top mixed level or selected components
 #
@@ -106,10 +105,10 @@ def exportMixedLeaveMode(appObjects, input_values):
     # selection available?
     if S_CPY_SELECTION_LOOKUP in input_values:
         # process selcted components
-        components = getComponents(input_values[S_CPY_SELECTION_LOOKUP], components, True)
+        components = getComponents(input_values[S_CPY_SELECTION_LOOKUP], components, True, False)
     else:
         # process all components
-        components = getComponents(rootComponent.occurrences, components, True)
+        components = getComponents(rootComponent.occurrences, components, True, False)
 
      # list of processed and skipped file names
     processedComponents = []
