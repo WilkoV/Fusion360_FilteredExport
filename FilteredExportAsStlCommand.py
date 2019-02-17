@@ -15,6 +15,12 @@ S_STL_REFINEMENT_LOOKUP = 'stlDropDownStlRefinement'
 S_STL_REFINEMENT_LOW = 'Low'
 S_STL_REFINEMENT_MEDIUM = 'Medium'
 S_STL_REFINEMENT_HIGH = 'High'
+S_STL_REFINEMENT_ULTRA = 'Ultra'
+S_STL_REFINEMENT_CUSTOM = 'Custom'
+S_STL_SURFACE_DEVIATION = 'stlSurfaceDeviation'
+S_STL_NORMAL_DEVIATION = 'stlNormalDeviation'
+S_STL_MAXIMUM_EDGE_LENGTH = 'stlMaximumEdgeLength'
+S_STL_ASPECT_RATIO = 'stlAspectRatio'
 S_STL_FORMAT_LOOKUP = 'stlDropDownStlFormat'
 S_STL_FORMAT_BINARY = 'Binary'
 S_STL_FORMAT_TEXT = 'Text'
@@ -28,6 +34,7 @@ S_STL_FILTER_LINKED_COMPONENTS = 'stlExportFilterLinkedComponents'
 S_STL_EXPORT_COMPONENT_NAME_TYPE = 'stlDropDownExportComponentNameType'
 S_STL_EXPORT_COMPONENT_NAME_TYPE_LAST_FROM_PATH = 'Last From Path'
 S_STL_EXPORT_COMPONENT_NAME_TYPE_FULL_PATH = 'Full Path'
+S_STL_EXPORT_ADD_REFINMENT_NAME_TO_NAME = 'stlExportAddRefinmentNameToName'
 
 # build a file name from a component. File name looks like:
 # body parent component name + - + body name. leading and
@@ -79,17 +86,21 @@ def getCleanNameFromComponentPath(name, removeVersionTagFromNames, removeSpaces)
     
     return getCleanName(result, removeVersionTagFromNames, removeSpaces)
     
-
+    
 #
 # Get file name from body's name and component's name and remove unwanted information
 #
 def getFileName(body, rootComponent, addRootComponentNameToFilename, \
                     addComponentNameToFilename, addLastComponentNameOnly, \
-                    removeVersionTagFromNames, removeSpaces, fileNames):
+                    removeVersionTagFromNames, removeSpaces, addRefinmentName, \
+                    refinementName, fileNames):
 
     # build temporary  file name
     tmpFileName = ''
 
+    if addRefinmentName:
+        tmpFileName += refinementName + '-'
+        
     # add root component name if checked
     if addRootComponentNameToFilename and (rootComponent != body[0].parentComponent or not addComponentNameToFilename):
         tmpFileName += getCleanName(rootComponent.name, removeVersionTagFromNames, removeSpaces) + '-'
@@ -102,7 +113,7 @@ def getFileName(body, rootComponent, addRootComponentNameToFilename, \
             tmpFileName += getCleanNameFromComponentPath(body[1], removeVersionTagFromNames, removeSpaces) + '-'
 
     tmpFileName += getCleanName(body[0].name, removeVersionTagFromNames, removeSpaces)
-
+    
     # make file name unique within this export
     fileName = tmpFileName
     suffix = 1
@@ -151,14 +162,6 @@ def exportStls(bodies: list, rootComponent, input_values, appObjects):
     # export stl as binary (True) or text (False)
     exportAsBinary = input_values[S_STL_FORMAT_LOOKUP] == S_STL_FORMAT_BINARY
 
-    # export refinment (low, medium, high)
-    exportRefinement = 'MeshRefinementHigh'
-
-    if input_values[S_STL_REFINEMENT_LOOKUP] == S_STL_REFINEMENT_LOW:
-        exportRefinement = 'MeshRefinementLow'
-    elif input_values[S_STL_REFINEMENT_LOOKUP] == S_STL_REFINEMENT_MEDIUM:
-        exportRefinement = 'MeshRefinementMedium'
-
     # if file name is empty, replace it with a know directory
     if exportPath == '':
         exportPath = os.path.dirname
@@ -173,17 +176,37 @@ def exportStls(bodies: list, rootComponent, input_values, appObjects):
                                     input_values[S_STL_EXPORT_COMPONENT_NAME_TYPE] == S_STL_EXPORT_COMPONENT_NAME_TYPE_LAST_FROM_PATH, \
                                     input_values[S_STL_EXPORT_REMOVE_VERSION_FROM_FILENAME_LOOKUP], \
                                     input_values[S_STL_EXPORT_REMOVE_SPACES_FROM_FILENAME_LOOKUP], \
+                                    input_values[S_STL_EXPORT_ADD_REFINMENT_NAME_TO_NAME], \
+                                    input_values[S_STL_REFINEMENT_LOOKUP], \
                                     processedFiles)
-                                    
         
         # create full export name (including path)
         fullFileName = os.path.join(exportPath, fileName)
 
-        # create export options
+        # create common export options
         stlExportOptions = appObjects.export_manager.createSTLExportOptions(body[0], fullFileName)
         stlExportOptions.setToPrintUtility = False
         stlExportOptions.isBinaryFormat = exportAsBinary
-        stlExportOptions.mesRefinement = exportRefinement
+        
+        # adjust for ultra settings
+        if input_values[S_STL_REFINEMENT_LOOKUP] == S_STL_REFINEMENT_ULTRA:
+            stlExportOptions.meshRefinement = 3
+            stlExportOptions.surfaceDeviation = input_values[S_STL_SURFACE_DEVIATION]
+            stlExportOptions.normalDeviation = input_values[S_STL_NORMAL_DEVIATION]
+        
+        elif input_values[S_STL_REFINEMENT_LOOKUP] == S_STL_REFINEMENT_HIGH:
+            stlExportOptions.meshRefinement = 0
+        
+        elif input_values[S_STL_REFINEMENT_LOOKUP] == S_STL_REFINEMENT_MEDIUM:
+            stlExportOptions.meshRefinement = 1
+        
+        elif input_values[S_STL_REFINEMENT_LOOKUP] == S_STL_REFINEMENT_LOW:
+            stlExportOptions.meshRefinement = 2
+        
+        elif input_values[S_STL_REFINEMENT_LOOKUP] == S_STL_REFINEMENT_CUSTOM:
+            stlExportOptions.mesRefinement = 3
+            stlExportOptions.surfaceDeviation = input_values[S_STL_SURFACE_DEVIATION]
+            stlExportOptions.normalDeviation = input_values[S_STL_NORMAL_DEVIATION]
 
         # create stl file
         appObjects.export_manager.execute(stlExportOptions)
@@ -316,9 +339,14 @@ class FilteredExportAsStlCommand(Fusion360CommandBase):
         # Refinement (High, Medium, Low)
         dropDownStlRefinement = inputs.addDropDownCommandInput(S_STL_REFINEMENT_LOOKUP, 'Refinement', adsk.core.DropDownStyles.LabeledIconDropDownStyle);
         dropDownStlRefinementItems = dropDownStlRefinement.listItems
+        dropDownStlRefinementItems.add(S_STL_REFINEMENT_ULTRA, False, '')
         dropDownStlRefinementItems.add(S_STL_REFINEMENT_HIGH, True, '')
         dropDownStlRefinementItems.add(S_STL_REFINEMENT_MEDIUM, False, '')
         dropDownStlRefinementItems.add(S_STL_REFINEMENT_LOW, False, '')
+        dropDownStlRefinementItems.add(S_STL_REFINEMENT_CUSTOM, False, '')
+        
+        inputs.addFloatSpinnerCommandInput(S_STL_SURFACE_DEVIATION, 'Surface deviation', 'mm', 0.000846, 0.084635, .01, 0.001016).isEnabled = False
+        inputs.addFloatSpinnerCommandInput(S_STL_NORMAL_DEVIATION, 'Normal deviation', '', 1.0000, 41, 1, 10.0000).isEnabled = False
 
         # Filter linked components
         inputs.addBoolValueInput(S_STL_FILTER_LINKED_COMPONENTS, 'Filter linked components', True, '', False).value = False
@@ -327,6 +355,9 @@ class FilteredExportAsStlCommand(Fusion360CommandBase):
         groupFileNameOptions = inputs.addGroupCommandInput(S_STL_GROUP_FILENAME_OPTIONS_LOOKUP, 'Filename Options')
         groupFileNameOptions.isExpanded = True
         groupFileNameOptionsChildInput = groupFileNameOptions.children
+
+        # True if the refinement name should be added to the filename otherwise false
+        groupFileNameOptionsChildInput.addBoolValueInput(S_STL_EXPORT_ADD_REFINMENT_NAME_TO_NAME, 'Add refinement name', True).value = False
 
         # True if the name of the root component should be added to the file name otherwise false
         groupFileNameOptionsChildInput.addBoolValueInput(S_STL_EXPORT_ADD_ROOT_NAME_TO_FILENAME_LOOKUP, 'Add root name', True).value = True
@@ -344,7 +375,7 @@ class FilteredExportAsStlCommand(Fusion360CommandBase):
 
         # True if spaces should be removed or replaced otherwise false
         groupFileNameOptionsChildInput.addBoolValueInput(S_STL_EXPORT_REMOVE_SPACES_FROM_FILENAME_LOOKUP, 'Remove spaces', True).value = True
-
+        
     # Run whenever a user makes any change to a value or selection in the addin UI
     def on_preview(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs, args, input_values):
         pass
@@ -357,10 +388,41 @@ class FilteredExportAsStlCommand(Fusion360CommandBase):
 
     # Run when any input is changed.
     def on_input_changed(self, command: adsk.core.Command, inputs: adsk.core.CommandInputs, changed_input, input_values):
-        
+
+        # Add component names to filenames?
         if changed_input.id == S_STL_EXPORT_ADD_COMPONENT_NAME_TO_FILENAME_LOOKUP:
-            # show component name style if 'add components to name' is true otherwise hide the drop down list.
             if changed_input.value == True:
+                # show component name style if 'add components to name' is true otherwise hide the drop down list.
                 inputs.itemById(S_STL_EXPORT_COMPONENT_NAME_TYPE).isVisible = True
             else:
+                # hide component name style if 'add components to name' is true otherwise hide the drop down list.
                 inputs.itemById(S_STL_EXPORT_COMPONENT_NAME_TYPE).isVisible = False
+
+        elif changed_input.id == S_STL_REFINEMENT_LOOKUP:
+            if input_values[S_STL_REFINEMENT_LOOKUP] == S_STL_REFINEMENT_ULTRA:
+                inputs.itemById(S_STL_SURFACE_DEVIATION).value = 0.000508
+                inputs.itemById(S_STL_NORMAL_DEVIATION).value = 5.0000
+                inputs.itemById(S_STL_SURFACE_DEVIATION).isEnabled = False
+                inputs.itemById(S_STL_NORMAL_DEVIATION).isEnabled = False
+
+            elif input_values[S_STL_REFINEMENT_LOOKUP] == S_STL_REFINEMENT_HIGH:
+                inputs.itemById(S_STL_SURFACE_DEVIATION).value = 0.001016
+                inputs.itemById(S_STL_NORMAL_DEVIATION).value = 10.0000
+                inputs.itemById(S_STL_SURFACE_DEVIATION).isEnabled = False
+                inputs.itemById(S_STL_NORMAL_DEVIATION).isEnabled = False
+                
+            elif input_values[S_STL_REFINEMENT_LOOKUP] == S_STL_REFINEMENT_MEDIUM:
+                inputs.itemById(S_STL_SURFACE_DEVIATION).value = 0.003212
+                inputs.itemById(S_STL_NORMAL_DEVIATION).value = 15.0000
+                inputs.itemById(S_STL_SURFACE_DEVIATION).isEnabled = False
+                inputs.itemById(S_STL_NORMAL_DEVIATION).isEnabled = False
+                
+            elif input_values[S_STL_REFINEMENT_LOOKUP] == S_STL_REFINEMENT_LOW:
+                inputs.itemById(S_STL_SURFACE_DEVIATION).value = 0.008069
+                inputs.itemById(S_STL_NORMAL_DEVIATION).value = 30.0000
+                inputs.itemById(S_STL_SURFACE_DEVIATION).isEnabled = False
+                inputs.itemById(S_STL_NORMAL_DEVIATION).isEnabled = False
+                
+            elif input_values[S_STL_REFINEMENT_LOOKUP] == S_STL_REFINEMENT_CUSTOM:
+                inputs.itemById(S_STL_SURFACE_DEVIATION).isEnabled = True
+                inputs.itemById(S_STL_NORMAL_DEVIATION).isEnabled = True                

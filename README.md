@@ -25,19 +25,20 @@ Select Component | If no components are selected, the add-in processes all compo
 ### STL Format
 Parameter | Description
 ------------ | -------------
-Format | Defines if the resulting export contains `binary` or `text` content
-Refinement | The options `high`, `medium` or `low` correspond to the original definition
+Format | Defines if the resulting export contains 'binary' or 'text' content
+Refinement | The options 'High', 'Medium' or 'Low' correspond to the original definition. 'Custom' allows the user to manually define the 'Surface defiation' and 'Normal defiation' settings. The 'Ultra' setting is a predefined customization where 'Surface defiation' and 'Normal defiation' are half of the value of the 'High' settings. 
 Filter linked components | Check to ignore linked components otherwise uncheck
 
 ### Filename configuration
-This part is hidden by default and configures the filenames of the export. The default filename looks like `<Root_component_name>-<Component_name>-<Body_name>.stl`. 
+This part is hidden by default and configures the filenames of the export. The default filename looks like '<Root_component_name>-<Component_name>-<Body_name>.stl'. 
 
 Parameter | Description
 ------------ | -------------
-Add root name | If checked the first element of the filename is `<Root component name v[0-9]*>`
-Add component name | If checked the `<component name v[0-9]*>` is part of the filename
+Add refinement name | If checked the refinement name (e.g. Low or High) is part of the filename
+Add root name | If checked the first element of the filename is '<Root component name v[0-9]*>'
+Add component name | If checked the '<component name v[0-9]*>' is part of the filename
 Component name type | The option 'Last From Path' adds the name of the last component to the path, 'Full Path' adds all component names from the body path to the filename.
-Remove version tags | If checked version tags matching the pattern ` v[0-9]*` are removed
+Remove version tags | If checked version tags matching the pattern ' v[0-9]*' are removed
 Remove spaces | Leading and trailing spaces are removed, remaining spaces are replaced with underscores
 
 ## Filtered Save Copy As Export
@@ -57,7 +58,7 @@ Parameter | Description
 ------------ | -------------
 Top level | Only top level or selected componetns will be exported. Sub components will not be processed, filtered etc. separetely 
 Leaves | If a component contains only bodies and no sub components, it will be exported. If a component contains no bodies but sub-components, the sub component will be exported but not the current component. If a component contains bodies and sub-components, the sub component will be exported but not the current component. The add-in will report a skipped note but those bodies wil never get exported. 
-Mixed leaves | Like `Leaves` but if a component contains bodies and sub-components, the sub component will be exported and the current component will be exported. No body gets lost, but duplicates are created
+Mixed leaves | Like 'Leaves' but if a component contains bodies and sub-components, the sub component will be exported and the current component will be exported. No body gets lost, but duplicates are created
 
 ## Filtered Save Copy As Export
 UI configuration and filters are the same as the saveCopy function. The only difference is, that ans STP file will be exported. 
@@ -70,6 +71,9 @@ UI configuration and filters are the same as the saveCopy function. The only dif
 # Change log
 Date | Module | Description
 ------------ | ------------- | -------------
+2019/02/17 | STL Export | Fixes #5 - Stl export does not respect meshRefinement. API was fed wrong values, but did not throw any error.
+2019/02/17 | STL Export | Closes #4 - Allow user to add custom stl export values. In addition an 'Ultra setting' was added that works better with e.g. spheres. Refinment name can be added to the export name, too. 
+2019/02/14 | STL Export | Fix #3 - STP and CPY exports crashes if root and one ore more other components are selected
 2019/02/13 | STL Export | Closes #1 - Adds the choice between 'only last component name' or 'full path' for exported component names. 
 2019/02/13 | STL Export | Fix #2 - Files will not be exported if they contain a dot (.) in the filename. The API doesn't reports an error. Issue is fixed by replacing dots with two underscores (__)
 2018/10/28 | STL Export | Filter / exclude linked components. 
@@ -87,7 +91,7 @@ Date | Module | Description
 # Known Issues
 * If a body has several instances (e.g. the body was source in a pattern feature) each instance will be exported
 * Export does not protect existing files. They are overwritten without asking.
-* The result message after the `Copy Save As Export` might be prompted and exports are not visible. Synchronization might take some time. Pressing Refresh might speed up the process.
+* The result message after the 'Copy Save As Export' might be prompted and exports are not visible. Synchronization might take some time. Pressing Refresh might speed up the process.
 
 # Wish List
 - [x] Add more STL export options
