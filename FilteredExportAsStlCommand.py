@@ -56,7 +56,7 @@ def getCleanName(name, removeVersionTagFromNames, removeSpaces):
         #remove versions from root
         result = re.sub(r' v[0-9]*$', '', result)
         
-    result.replace(':', '__')
+    result = re.sub(r':', '__', result)
 
     if removeSpaces:
         # remove leading and tailing spaces
@@ -83,6 +83,9 @@ def getCleanNameFromComponentPath(name, removeVersionTagFromNames, removeSpaces)
     if removeVersionTagFromNames:
         result = re.sub(r':[0-9]*\+', '-', result)
         result = re.sub(r':[0-9]*$', '', result)
+    else:
+        result = re.sub(r'\+', '__', result)
+        result = re.sub(r':', '__', result)
     
     return getCleanName(result, removeVersionTagFromNames, removeSpaces)
     

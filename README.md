@@ -71,6 +71,7 @@ UI configuration and filters are the same as the saveCopy function. The only dif
 # Change log
 Date | Module | Description
 ------------ | ------------- | -------------
+2019/02/25 | STL Export | Fixes #6 - Crash when exporting with version number. Remaining colons causes the crash.
 2019/02/17 | STL Export | Fixes #5 - Stl export does not respect meshRefinement. API was fed wrong values, but did not throw any error.
 2019/02/17 | STL Export | Closes #4 - Allow user to add custom stl export values. In addition an 'Ultra setting' was added that works better with e.g. spheres. Refinment name can be added to the export name, too. 
 2019/02/14 | STL Export | Fix #3 - STP and CPY exports crashes if root and one ore more other components are selected
