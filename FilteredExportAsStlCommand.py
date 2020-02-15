@@ -69,6 +69,11 @@ def getCleanName(name, removeVersionTagFromNames, removeSpaces):
     # Replace it with a double underscore. 
     result = result.replace('.', '__')
 
+    # if name contains a slash it will fail to export (on windows)
+    # Replace those with double slashes
+    
+    result = result.replace('/', '__')
+
     return result
 
 
