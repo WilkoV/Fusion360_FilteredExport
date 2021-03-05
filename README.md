@@ -1,3 +1,5 @@
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 # DEPRICATED
 The development of this add-in was stopped because it was replaced by a newer, more comfortable add-in. This can be found here:
 
