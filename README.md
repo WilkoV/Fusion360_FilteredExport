@@ -1,4 +1,9 @@
-# FilteredExport
+# DEPRICATED
+The development of this add-in was stopped because it was replaced by a newer, more comfortable add-in. This can be found here:
+
+https://github.com/WilkoV/Fusion360_ExportIt
+
+
 Fusion 360 export mechanism do have a all or one mentality. If the user chooses everything Fusion 360 creates sometimes way to many objects and choosing one object could be time extensiv. This add-in solves some of the issues and provides following modules 
 
 Add-in | Description
